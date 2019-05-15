@@ -22,15 +22,17 @@ class PostHandler(BaseHTTPRequestHandler):
         data = json.loads(data_string)
         print(data)
 
+        if (not data['app_id'] == 'ubc_econode_test_network'):
+            return # message is not from a node
+
         nodeString = data['dev_id']
         payload = data['payload_fields']['data']
         print('Parsing ', payload)
 
         # authentication
 
-
         # extract node information
-        node_id = ''.join([s for s in string if s.isdigit()])
+        node_id = ''.join([s for s in nodeString if s.isdigit()])
         print(node_id)
         print(type(node_id))
 
@@ -42,6 +44,7 @@ class PostHandler(BaseHTTPRequestHandler):
             # data message
             self.parseDataString(node_id, payload)
 
+        return
 
     def parseDataString(self, node_id, string):
         entries = string.split('&')
