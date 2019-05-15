@@ -11,8 +11,8 @@ import mysql.connector
 
 class PostHandler(BaseHTTPRequestHandler):
 
-    def __init__(self, a, b, c, d):
-        super().__init__(a, b, c, d)
+    def __init__(self, a, b, c):
+        super().__init__(a, b, c)
         self.database = EcoDatabase()
 
     def do_POST(self):
@@ -35,10 +35,10 @@ class PostHandler(BaseHTTPRequestHandler):
 
         if payload[0] == 'C':
             # config message
-            parseTitleString(node_id, data)
+            self.parseTitleString(node_id, data)
         else:
             # data message
-            parseDataString(node_id, data)
+            self.parseDataString(node_id, data)
 
 
     def parseDataString(self, node_id, string):
