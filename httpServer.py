@@ -6,6 +6,9 @@ import threading
 from cgi import parse_header, parse_multipart
 import json
 
+import datetime
+from time import gmtime, strftime
+
 import mysql.connector
 
 
@@ -51,8 +54,8 @@ class PostHandler(BaseHTTPRequestHandler):
 
         boot_count = entries[0]
 
-        read_time = datetimeFromUnixTime(entries[1])
-        store_time = getCurrentTime()
+        read_time = datetime.datetime.fromtimestamp(entries[1]).strftime('%Y-%m-%d %H:%M:%S')
+        store_time = strftime("%Y-%m-%d %H:%M:%S", gmtime())
 
         for entry in entries[2:]:
             e = entry.split(':')
@@ -69,8 +72,8 @@ class PostHandler(BaseHTTPRequestHandler):
 
         boot_count = entries[0]
 
-        boot_time = datetimeFromUnixTime(entries[1])
-        store_time = getCurrentTime()
+        boot_time = datetime.datetime.fromtimestamp(entries[1]).strftime('%Y-%m-%d %H:%M:%S')
+        store_time = strftime("%Y-%m-%d %H:%M:%S", gmtime())
 
         self.database.insert_node_setup(node_id, boot_count, boot_time, store_time)
 
