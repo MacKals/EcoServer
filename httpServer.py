@@ -8,6 +8,7 @@ import json
 
 import datetime
 from time import gmtime, strftime
+import time
 
 import mysql.connector
 
@@ -54,7 +55,7 @@ class PostHandler(BaseHTTPRequestHandler):
 
         boot_count = entries[0]
 
-        read_time = datetime.datetime.fromtimestamp(entries[1]).strftime('%Y-%m-%d %H:%M:%S')
+        read_time = datetime.datetime.fromtimestamp(int(entries[1])).strftime('%Y-%m-%d %H:%M:%S')
         store_time = strftime("%Y-%m-%d %H:%M:%S", gmtime())
 
         for entry in entries[2:]:
@@ -72,7 +73,7 @@ class PostHandler(BaseHTTPRequestHandler):
 
         boot_count = entries[0]
 
-        boot_time = datetime.datetime.fromtimestamp(entries[1]).strftime('%Y-%m-%d %H:%M:%S')
+        boot_time = datetime.datetime.fromtimestamp(int(entries[1])).strftime('%Y-%m-%d %H:%M:%S')
         store_time = strftime("%Y-%m-%d %H:%M:%S", gmtime())
 
         self.database.insert_node_setup(node_id, boot_count, boot_time, store_time)
