@@ -20,6 +20,8 @@ class PostHandler(BaseHTTPRequestHandler):
 
         data_string = self.rfile.read(int(self.headers['Content-Length']))
         data = json.loads(data_string)
+        print(data)
+
         nodeString = data['dev_id']
         payload = data['payload_fields']['data']
         print('Parsing ', payload)
@@ -35,10 +37,10 @@ class PostHandler(BaseHTTPRequestHandler):
 
         if payload[0] == 'C':
             # config message
-            self.parseTitleString(node_id, data)
+            self.parseTitleString(node_id, payload)
         else:
             # data message
-            self.parseDataString(node_id, data)
+            self.parseDataString(node_id, payload)
 
 
     def parseDataString(self, node_id, string):
