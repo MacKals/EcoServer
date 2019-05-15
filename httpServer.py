@@ -30,7 +30,7 @@ class PostHandler(BaseHTTPRequestHandler):
 
 
         # extract node information
-        node_id = str([s for s in nodeString.split() if s.isdigit()])
+        node_id = ''.join([s for s in string if s.isdigit()])
         print(node_id)
         print(type(node_id))
 
