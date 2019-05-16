@@ -61,8 +61,8 @@ class PostHandler(BaseHTTPRequestHandler):
             readings = e[1].split(',')
 
             for parameter_number, data_point in enumerate(readings):
-                #writeDataToDatabase(int(node), int(boot_count), int(sensor), param, read_time, store_time, float(reading));
-                database.insert_data_point(node_id, boot_count, sensor_address, parameter_number, read_time, store_time, data_point);
+                #writeDataToDatabase(int(node), int(boot_count), int(sensor), param, read_time, store_time, float(reading))
+                database.insert_data_point(node_id, boot_count, sensor_address, parameter_number, read_time, store_time, data_point)
 
     def parseTitleString(self, node_id, string):
         entries = string[1:].split('&')
@@ -89,11 +89,11 @@ class EcoDatabase:
     # Initialize variables for communicating with data-base
     def __init__(self):
         self.engine = mysql.connector.connect(
-               user="ecohydro",
-               password="7fQh53G6D2BuCnT54hXH95CJx",
-               host="ubc-ecohydro-nodes-mysql-database.cycweraudmq1.us-east-1.rds.amazonaws.com",
-               port='3306',
-               database='eco_nodes'
+            user="ecohydro",
+            password="7fQh53G6D2BuCnT54hXH95CJx",
+            host="ubc-ecohydro-nodes-mysql-database.cycweraudmq1.us-east-1.rds.amazonaws.com",
+            port='3306',
+            database='eco_nodes'
         )
 
         self.cur = self.engine.cursor()
@@ -130,9 +130,9 @@ class EcoDatabase:
         self.engine.commit()
 
 
+database = EcoDatabase()
 
 if __name__ == '__main__':
-    database = EcoDatabase()
     from http.server import HTTPServer
     server = HTTPServer(('0.0.0.0', 5200), PostHandler)
     print('Starting server, use <Ctrl-C> to stop')
