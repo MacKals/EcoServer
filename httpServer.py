@@ -10,8 +10,7 @@ import datetime
 from time import gmtime, strftime
 import time
 
-import mysql.connector
-
+import pymysql.cursors
 
 # wrapper for communicating with database
 class EcoDatabase:
@@ -19,49 +18,47 @@ class EcoDatabase:
     # Initialize variables for communicating with data-base
     def __init__(self):
         print("starting database")
-        self.engine = mysql.connector.connect(
-            user="ecohydro",
-            password="7fQh53G6D2BuCnT54hXH95CJx",
-            host="ubc-ecohydro-nodes-mysql-database.cycweraudmq1.us-east-1.rds.amazonaws.com",
-            port='3306',
-            database='eco_nodes'
-        )
+        self.connection = pymysql.connect(host='ubc-ecohydro-nodes-mysql-database.cycweraudmq1.us-east-1.rds.amazonaws.com',
+                                          port=3306,
+                                          user='ecohydro',
+                                          password='7fQh53G6D2BuCnT54hXH95CJx',
+                                          database='eco_nodes',
+                                          charset='utf8mb4',
+                                          cursorclass=pymysql.cursors.DictCursor)
+        self.cursor = self.connection.cursor()
         print("database started")
-
-        self.cur = self.engine.cursor()
-        print("cursor started")
 
 
     # Cleanup variables for talking to database
     def __del__(self):
         print("closed")
-        self.cur.close()
-        self.engine.close()
+        self.cursor.close()
+        self.connection.close()
 
 
     def insert_data_point(self, node_id, boot_count, sensor_address, parameter_number, read_time, store_time, data_point):
         query = f'call eco_nodes.insert_data_point({node_id}, {boot_count}, {sensor_address}, {parameter_number}, \'{read_time}\', \'{store_time}\', {data_point});'
         print(query)
-        self.cur.execute(query)
-        self.engine.commit()
+        self.cursor.execute(query)
+        self.connection.commit()
 
     def insert_node_sensor(self, node_id, boot_count, sensor_address, sensor_serial_number):
         query = f'call eco_nodes.insert_node_sensor({node_id}, {boot_count}, {sensor_address}, {sensor_serial_number});'
         print(query)
-        self.cur.execute(query)
-        self.engine.commit()
+        self.cursor.execute(query)
+        self.connection.commit()
 
     def insert_node_setup(self, node_id, boot_count, boot_time, store_time, position="", comment=""):
         query = f'call eco_nodes.insert_node_setup({node_id}, {boot_count}, \'{boot_time}\', \'{store_time}\', {position}, {comment});'
         print(query)
-        self.cur.execute(query)
-        self.engine.commit()
+        self.cursor.execute(query)
+        self.connection.commit()
 
     def insert_sensor_type(self, id, type, name, manufacturer, description):
         query = f'call eco_nodes.insert_sensor_type({id}, \'{type}\', \'{name}\', \'{manufacturer}\', \'{description}\');'
         print(query)
-        self.cur.execute(query)
-        self.engine.commit()
+        self.cursor.execute(query)
+        self.connection.commit()
 
 
 
