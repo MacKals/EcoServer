@@ -49,7 +49,7 @@ class EcoDatabase:
         self.connection.commit()
 
     def insert_node_setup(self, node_id, boot_count, boot_time, store_time, latitude='0.0', longitude='0.0', comment="test comment"):
-        query = f'call eco_nodes.insert_node_setup({node_id}, {boot_count}, \'{boot_time}\', \'{store_time}\', {latitude}, {longitude}, {comment});'
+        query = f'call eco_nodes.insert_node_setup({node_id}, {boot_count}, \'{boot_time}\', \'{store_time}\', {latitude}, {longitude}, \'{comment}\');'
         print(query)
         self.cursor.execute(query)
         self.connection.commit()
