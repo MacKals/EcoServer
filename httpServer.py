@@ -88,6 +88,7 @@ class EcoDatabase:
 
     # Initialize variables for communicating with data-base
     def __init__(self):
+        print("starting database")
         self.engine = mysql.connector.connect(
             user="ecohydro",
             password="7fQh53G6D2BuCnT54hXH95CJx",
@@ -95,8 +96,11 @@ class EcoDatabase:
             port='3306',
             database='eco_nodes'
         )
+        print("database started")
 
         self.cur = self.engine.cursor()
+        print("cursor started")
+
 
     # Cleanup variables for talking to database
     def __del__(self):
