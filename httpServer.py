@@ -13,76 +13,6 @@ import time
 import mysql.connector
 
 
-class PostHandler(BaseHTTPRequestHandler):
-
-    def do_POST(self):
-        # Parse the form data posted
-
-        data_string = self.rfile.read(int(self.headers['Content-Length']))
-        data = json.loads(data_string)
-        print(data)
-
-        if (not data['app_id'] == 'ubc_econode_test_network'):
-            return # message is not from a node
-
-        nodeString = data['dev_id']
-        payload = data['payload_fields']['data']
-        print('Parsing ', payload)
-
-        # authentication
-
-        # extract node information
-        node_id = ''.join([s for s in nodeString if s.isdigit()])
-        print(node_id)
-        print(type(node_id))
-
-
-        if payload[0] == 'C':
-            # config message
-            self.parseTitleString(node_id, payload)
-        else:
-            # data message
-            self.parseDataString(node_id, payload)
-
-        return
-
-    def parseDataString(self, node_id, string):
-        entries = string.split('&')
-
-        boot_count = entries[0]
-
-        read_time = datetime.datetime.fromtimestamp(int(entries[1])).strftime('%Y-%m-%d %H:%M:%S')
-        store_time = strftime("%Y-%m-%d %H:%M:%S", gmtime())
-
-        for entry in entries[2:]:
-            e = entry.split(':')
-
-            sensor_address = e[0]
-            readings = e[1].split(',')
-
-            for parameter_number, data_point in enumerate(readings):
-                #writeDataToDatabase(int(node), int(boot_count), int(sensor), param, read_time, store_time, float(reading))
-                database.insert_data_point(node_id, boot_count, sensor_address, parameter_number, read_time, store_time, data_point)
-
-    def parseTitleString(self, node_id, string):
-        entries = string[1:].split('&')
-
-        boot_count = entries[0]
-
-        boot_time = datetime.datetime.fromtimestamp(int(entries[1])).strftime('%Y-%m-%d %H:%M:%S')
-        store_time = strftime("%Y-%m-%d %H:%M:%S", gmtime())
-
-        database.insert_node_setup(node_id, boot_count, boot_time, store_time)
-
-        for entry in entries[2:]:
-            e = entry.split(':')
-
-            sensor_address = e[0]
-            sensor_serial_number = e[1]
-
-            database.insert_node_sensor(node_id, boot_count, sensor_address, sensor_serial_number)
-
-
 # wrapper for communicating with database
 class EcoDatabase:
 
@@ -134,7 +64,79 @@ class EcoDatabase:
         self.engine.commit()
 
 
-database = EcoDatabase()
+
+class PostHandler(BaseHTTPRequestHandler):
+
+    database = EcoDatabase()
+
+    def do_POST(self):
+        # Parse the form data posted
+
+        data_string = self.rfile.read(int(self.headers['Content-Length']))
+        data = json.loads(data_string)
+        print(data)
+
+        if (not data['app_id'] == 'ubc_econode_test_network'):
+            return # message is not from a node
+
+        nodeString = data['dev_id']
+        payload = data['payload_fields']['data']
+        print('Parsing ', payload)
+
+        # authentication
+
+        # extract node information
+        node_id = ''.join([s for s in nodeString if s.isdigit()])
+        print(node_id)
+        print(type(node_id))
+
+
+        if payload[0] == 'C':
+            # config message
+            self.parseTitleString(node_id, payload)
+        else:
+            # data message
+            self.parseDataString(node_id, payload)
+
+        return
+
+    def parseDataString(self, node_id, string):
+        entries = string.split('&')
+
+        boot_count = entries[0]
+
+        read_time = datetime.datetime.fromtimestamp(int(entries[1])).strftime('%Y-%m-%d %H:%M:%S')
+        store_time = strftime("%Y-%m-%d %H:%M:%S", gmtime())
+
+        for entry in entries[2:]:
+            e = entry.split(':')
+
+            sensor_address = e[0]
+            readings = e[1].split(',')
+
+            for parameter_number, data_point in enumerate(readings):
+                #writeDataToDatabase(int(node), int(boot_count), int(sensor), param, read_time, store_time, float(reading))
+                self.database.insert_data_point(node_id, boot_count, sensor_address, parameter_number, read_time, store_time, data_point)
+
+    def parseTitleString(self, node_id, string):
+        entries = string[1:].split('&')
+
+        boot_count = entries[0]
+
+        boot_time = datetime.datetime.fromtimestamp(int(entries[1])).strftime('%Y-%m-%d %H:%M:%S')
+        store_time = strftime("%Y-%m-%d %H:%M:%S", gmtime())
+
+        self.database.insert_node_setup(node_id, boot_count, boot_time, store_time)
+
+        for entry in entries[2:]:
+            e = entry.split(':')
+
+            sensor_address = e[0]
+            sensor_serial_number = e[1]
+
+            self.database.insert_node_sensor(node_id, boot_count, sensor_address, sensor_serial_number)
+
+
 
 if __name__ == '__main__':
     from http.server import HTTPServer
