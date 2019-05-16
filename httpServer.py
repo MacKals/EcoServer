@@ -15,10 +15,6 @@ import mysql.connector
 
 class PostHandler(BaseHTTPRequestHandler):
 
-    def __init__(self, a, b, c):
-        super().__init__(a, b, c)
-        self.database = EcoDatabase()
-
     def do_POST(self):
         # Parse the form data posted
 
@@ -66,7 +62,7 @@ class PostHandler(BaseHTTPRequestHandler):
 
             for parameter_number, data_point in enumerate(readings):
                 #writeDataToDatabase(int(node), int(boot_count), int(sensor), param, read_time, store_time, float(reading));
-                self.database.insert_data_point(node_id, boot_count, sensor_address, parameter_number, read_time, store_time, data_point);
+                database.insert_data_point(node_id, boot_count, sensor_address, parameter_number, read_time, store_time, data_point);
 
     def parseTitleString(self, node_id, string):
         entries = string[1:].split('&')
@@ -76,7 +72,7 @@ class PostHandler(BaseHTTPRequestHandler):
         boot_time = datetime.datetime.fromtimestamp(int(entries[1])).strftime('%Y-%m-%d %H:%M:%S')
         store_time = strftime("%Y-%m-%d %H:%M:%S", gmtime())
 
-        self.database.insert_node_setup(node_id, boot_count, boot_time, store_time)
+        database.insert_node_setup(node_id, boot_count, boot_time, store_time)
 
         for entry in entries[2:]:
             e = entry.split(':')
@@ -84,7 +80,7 @@ class PostHandler(BaseHTTPRequestHandler):
             sensor_address = e[0]
             sensor_serial_number = e[1]
 
-            self.database.insert_node_sensor(node_id, boot_count, sensor_address, sensor_serial_number)
+            database.insert_node_sensor(node_id, boot_count, sensor_address, sensor_serial_number)
 
 
 # wrapper for communicating with database
@@ -136,6 +132,7 @@ class EcoDatabase:
 
 
 if __name__ == '__main__':
+    database = EcoDatabase()
     from http.server import HTTPServer
     server = HTTPServer(('0.0.0.0', 5200), PostHandler)
     print('Starting server, use <Ctrl-C> to stop')
