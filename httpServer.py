@@ -127,7 +127,6 @@ sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 sock.bind(addr)
 sock.listen(5)
 
-
 # Launch multiple listener threads.
 class Thread(threading.Thread):
     def __init__(self, i):
@@ -146,4 +145,6 @@ class Thread(threading.Thread):
         httpd.serve_forever()
 
 [Thread(i) for i in range(20)]
+print('Server started, use <Ctrl-C> to stop')
+
 time.sleep(9e9)
