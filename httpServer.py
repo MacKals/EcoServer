@@ -1,4 +1,4 @@
-# PUSH server refference https://pymotw.com/2/BaseHTTPServer/index.html#module-BaseHTTPServer
+# PUSH server refference https://pymotw.com/2/http.server/index.html#module-http.server
 
 import time, threading, socket, socketserver, http.server
 import json, datetime
@@ -54,7 +54,7 @@ class EcoDatabase:
 
 
 
-class PostHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+class PostHandler(http.server.BaseHTTPRequestHandler):
 
     database = EcoDatabase()
 
@@ -136,7 +136,7 @@ class Thread(threading.Thread):
         self.daemon = True
         self.start()
     def run(self):
-        httpd = BaseHTTPServer.HTTPServer(addr, PostHandler, False)
+        httpd = http.server.HTTPServer(addr, PostHandler, False)
 
         # Prevent the HTTP server from re-binding every handler.
         # https://stackoverflow.com/questions/46210672/
