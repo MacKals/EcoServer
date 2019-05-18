@@ -39,6 +39,7 @@ class EcoDatabase:
     def insert_data_point(self, node_id, boot_count, sensor_address, parameter_number, read_time, store_time, data_point):
         query = f'call eco_nodes.insert_data_point({node_id}, {boot_count}, {sensor_address}, {parameter_number}, \'{read_time}\', \'{store_time}\', {data_point});'
         print(query)
+        time.sleep(0.5)
         self.cursor.execute(query)
         self.connection.commit()
 
@@ -48,7 +49,7 @@ class EcoDatabase:
         self.cursor.execute(query)
         self.connection.commit()
 
-    def insert_node_setup(self, node_id, boot_count, boot_time, store_time, latitude='0.0', longitude='0.0', comment="test comment"):
+    def insert_node_setup(self, node_id, boot_count, boot_time, store_time, latitude='0.0', longitude='0.0', comment="test deployment"):
         query = f'call eco_nodes.insert_node_setup({node_id}, {boot_count}, \'{boot_time}\', \'{store_time}\', {latitude}, {longitude}, \'{comment}\');'
         print(query)
         self.cursor.execute(query)
