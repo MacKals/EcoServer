@@ -58,6 +58,12 @@ class PostHandler(http.server.BaseHTTPRequestHandler):
 
     database = EcoDatabase()
 
+    def nowString(self):
+        return time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
+
+    def timeString(self, s):
+        return datetime.datetime.fromtimestamp(int(s)).strftime('%Y-%m-%d %H:%M:%S')
+
     def do_POST(self):
         # Parse the form data posted
 
@@ -90,8 +96,8 @@ class PostHandler(http.server.BaseHTTPRequestHandler):
 
         boot_count = entries[0]
 
-        read_time = datetime.datetime.fromtimestamp(int(entries[1])).strftime('%Y-%m-%d %H:%M:%S')
-        store_time = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
+        read_time = self.timeString(entries[1])
+        store_time = self.nowString()
 
         for entry in entries[2:]:
             e = entry.split(':')
@@ -107,8 +113,8 @@ class PostHandler(http.server.BaseHTTPRequestHandler):
 
         boot_count = entries[0]
 
-        boot_time = datetime.datetime.fromtimestamp(int(entries[1])).strftime('%Y-%m-%d %H:%M:%S')
-        store_time = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
+        boot_time = self.timeString(entries[1])
+        store_time = self.nowString()
 
         self.database.insert_node_setup(node_id, boot_count, boot_time, store_time)
 
