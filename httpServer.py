@@ -1,6 +1,6 @@
 # PUSH server refference https://pymotw.com/2/BaseHTTPServer/index.html#module-BaseHTTPServer
 
-import time, threading, socket, socketserver, http.server.HTTPServer
+import time, threading, socket, socketserver, http.server
 import json, datetime
 import pymysql.cursors
 
