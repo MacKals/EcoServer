@@ -39,7 +39,6 @@ class EcoDatabase:
     def insert_data_point(self, node_id, boot_count, sensor_address, parameter_number, read_time, store_time, data_point):
         query = f'call eco_nodes.insert_data_point({node_id}, {boot_count}, {sensor_address}, {parameter_number}, \'{read_time}\', \'{store_time}\', {data_point});'
         print(query)
-        time.sleep(0.5)
         self.cursor.execute(query)
         self.connection.commit()
 
@@ -74,20 +73,16 @@ class PostHandler(BaseHTTPRequestHandler):
         data = json.loads(data_string)
         print(data)
 
+        # authentication
         if (not data['app_id'] == 'ubc_econode_test_network'):
             return # message is not from a node
 
         nodeString = data['dev_id']
         payload = data['payload_fields']['data']
-        print('Parsing ', payload)
-
-        # authentication
+        print(threading.currentThread().getName(), 'parsing', payload)
 
         # extract node information
         node_id = ''.join([s for s in nodeString if s.isdigit()])
-        print(node_id)
-        print(type(node_id))
-
 
         if payload[0] == 'C':
             # config message
@@ -113,7 +108,6 @@ class PostHandler(BaseHTTPRequestHandler):
             readings = e[1].split(',')
 
             for parameter_number, data_point in enumerate(readings):
-                #writeDataToDatabase(int(node), int(boot_count), int(sensor), param, read_time, store_time, float(reading))
                 self.database.insert_data_point(node_id, boot_count, sensor_address, str(parameter_number), read_time, store_time, data_point)
 
     def parseTitleString(self, node_id, string):
@@ -134,10 +128,11 @@ class PostHandler(BaseHTTPRequestHandler):
 
             self.database.insert_node_sensor(node_id, boot_count, sensor_address, sensor_serial_number)
 
+class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
 
 
 if __name__ == '__main__':
     from http.server import HTTPServer
-    server = HTTPServer(('0.0.0.0', 5200), PostHandler)
+    server = ThreadedHTTPServer(('0.0.0.0', 5200), PostHandler)
     print('Starting server, use <Ctrl-C> to stop')
     server.serve_forever()
