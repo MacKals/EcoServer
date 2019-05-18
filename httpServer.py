@@ -1,15 +1,7 @@
 # PUSH server refference https://pymotw.com/2/BaseHTTPServer/index.html#module-BaseHTTPServer
 
-from http.server import HTTPServer, BaseHTTPRequestHandler
-from socketserver import ThreadingMixIn
-import threading
-from cgi import parse_header, parse_multipart
-import json
-
-import datetime
-from time import gmtime, strftime
-import time
-
+import time, threading, socket, SocketServer, BaseHTTPServer
+import json, datetime
 import pymysql.cursors
 
 # wrapper for communicating with database
@@ -62,7 +54,7 @@ class EcoDatabase:
 
 
 
-class PostHandler(BaseHTTPRequestHandler):
+class PostHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
     database = EcoDatabase()
 
@@ -99,7 +91,7 @@ class PostHandler(BaseHTTPRequestHandler):
         boot_count = entries[0]
 
         read_time = datetime.datetime.fromtimestamp(int(entries[1])).strftime('%Y-%m-%d %H:%M:%S')
-        store_time = strftime("%Y-%m-%d %H:%M:%S", gmtime())
+        store_time = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
 
         for entry in entries[2:]:
             e = entry.split(':')
@@ -116,7 +108,7 @@ class PostHandler(BaseHTTPRequestHandler):
         boot_count = entries[0]
 
         boot_time = datetime.datetime.fromtimestamp(int(entries[1])).strftime('%Y-%m-%d %H:%M:%S')
-        store_time = strftime("%Y-%m-%d %H:%M:%S", gmtime())
+        store_time = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
 
         self.database.insert_node_setup(node_id, boot_count, boot_time, store_time)
 
@@ -128,11 +120,30 @@ class PostHandler(BaseHTTPRequestHandler):
 
             self.database.insert_node_sensor(node_id, boot_count, sensor_address, sensor_serial_number)
 
-class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
-    """Handle requests in a separate thread."""
 
-if __name__ == '__main__':
-    from http.server import HTTPServer
-    server = ThreadedHTTPServer(('0.0.0.0', 5200), PostHandler)
-    print('Starting server, use <Ctrl-C> to stop')
-    server.serve_forever()
+addr = ('0.0.0.0', 5200)
+sock = socket.socket (socket.AF_INET, socket.SOCK_STREAM)
+sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+sock.bind(addr)
+sock.listen(5)
+
+
+# Launch multiple listener threads.
+class Thread(threading.Thread):
+    def __init__(self, i):
+        threading.Thread.__init__(self)
+        self.i = i
+        self.daemon = True
+        self.start()
+    def run(self):
+        httpd = BaseHTTPServer.HTTPServer(addr, PostHandler, False)
+
+        # Prevent the HTTP server from re-binding every handler.
+        # https://stackoverflow.com/questions/46210672/
+        httpd.socket = sock
+        httpd.server_bind = self.server_close = lambda self: None
+
+        httpd.serve_forever()
+
+[Thread(i) for i in range(20)]
+time.sleep(9e9)
