@@ -114,7 +114,7 @@ class PostHandler(BaseHTTPRequestHandler):
 
             for parameter_number, data_point in enumerate(readings):
                 #writeDataToDatabase(int(node), int(boot_count), int(sensor), param, read_time, store_time, float(reading))
-                self.database.insert_data_point(node_id, boot_count, sensor_address, parameter_number, read_time, store_time, data_point)
+                self.database.insert_data_point(node_id, boot_count, sensor_address, str(parameter_number), read_time, store_time, data_point)
 
     def parseTitleString(self, node_id, string):
         entries = string[1:].split('&')
