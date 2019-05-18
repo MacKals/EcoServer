@@ -129,7 +129,7 @@ class PostHandler(BaseHTTPRequestHandler):
             self.database.insert_node_sensor(node_id, boot_count, sensor_address, sensor_serial_number)
 
 class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
-
+    """Handle requests in a separate thread."""
 
 if __name__ == '__main__':
     from http.server import HTTPServer
