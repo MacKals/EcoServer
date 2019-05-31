@@ -72,7 +72,8 @@ class PostHandler(http.server.BaseHTTPRequestHandler):
         print(data)
 
         # authentication
-        if (not data['app_id'] == 'ubc_econode_test_network'):
+        if (not data['app_id'] == 'ubc_ecohydrology'):
+            print("Message from unknown app_id:", data['app_id'])
             return # message is not from a node
 
         nodeString = data['dev_id']
