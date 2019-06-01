@@ -1,33 +1,33 @@
 dictionary = {
-    '0': 0,
-    '1': 1,
-    '2': 2,
-    '3': 3,
-    '4': 4,
-    '5': 5,
-    '6': 6,
-    '7': 7,
-    '8': 8,
-    '9': 9,
-    '.': 10,
-    '&': 11,
-    ':': 12,
-    ',': 13,
+    '0': 1,
+    '1': 2,
+    '2': 3,
+    '3': 4,
+    '4': 5,
+    '5': 6,
+    '6': 7,
+    '7': 8,
+    '8': 9,
+    '9': 10,
+    '.': 11,
+    '&': 12,
+    ':': 13,
+    ',': 14
 }
 
 inverseDictionary = {v: k for k, v in dictionary.items()}
 
-def encode(m):
-    return ''.join([format(dictionary[c], '04b') for c in m])
-
-def byteRepresentation(m):
-    return ''.join('{:08b}'.format(ord(c)) for c in m)
-
 def decode(m):
-    if (len(m)%4 != 0):
-        print('error, message bytes wrong')
+    array = m.split(',')
+
     s = ''
-    for i in range(int(len(m)/4)):
-        j = i*4
-        s += inverseDictionary[int(m[j:j+4], 2)]
+    for element in array:
+        b = format(int(element, 10), '08b')
+        n1 = int(b[0:4],2)
+        n2 = int(b[4:8],2)
+
+        s += inverseDictionary[n1]
+        if (n2 != 0):
+            s += inverseDictionary[n2]
+
     return s

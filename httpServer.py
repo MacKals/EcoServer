@@ -79,10 +79,7 @@ class PostHandler(http.server.BaseHTTPRequestHandler):
             return # message is not from a node
 
         nodeString = data['dev_id']
-
-        messageBytes = data['payload_raw']
-        print(messageBytes)
-        payload = EcoEncoder.decode(messageBytes)
+        payload = EcoEncoder.decode(data['payload_fields']['bytes'])
 
         print(threading.currentThread().getName(), 'parsing', payload)
 
