@@ -9,7 +9,7 @@ db = EcoDatabase()
 #def insert_node_sensor(self, node_id, boot_count, sensor_address, sensor_serial_number):
 #def insert_gps_point(self, node_id, boot_count, read_time, store_time, latitude, longitude, altitude, siv):
 
-db.insert_data_point(0, 1, 1, 1, 1, 1, 1)
+db.insert_data_point(2, 59, 16, 0, '2019-06-01 13:14:35', '2019-06-01 20:15:09', 2.98)
 db.insert_node_setup()
 db.insert_node_sensor()
 db.insert_gps_point()

@@ -35,7 +35,7 @@ class EcoDatabase:
     # insert new node master config from init message
     def insert_node_setup(self, node_id, boot_count, boot_time, store_time, comment="no comment"):
         query = 'INSERT INTO node_setup(node_id, boot_count, boot_time, store_time, comment) '
-        query += f'VALUES ({node_id}, {boot_count}, \'{boot_time}\', \'{store_time}\', {comment});'
+        query += f'VALUES ({node_id}, {boot_count}, \'{boot_time}\', \'{store_time}\', \'{comment}\');'
         print(query)
         self.cursor.execute(query)
         self.connection.commit()

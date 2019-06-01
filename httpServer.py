@@ -59,8 +59,6 @@ class PostHandler(http.server.BaseHTTPRequestHandler):
 
         for entry in entries[2:]:
             e = entry.split(':')
-            print("entry",entry)
-            print("e",e)
             sensor_address = e[0]
             readings = e[1].split(',')
 
