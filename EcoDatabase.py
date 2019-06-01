@@ -34,7 +34,7 @@ class EcoDatabase:
 
     # insert new node master config from init message
     def insert_node_setup(self, node_id, boot_count, boot_time, store_time, comment="no comment"):
-        query = 'INSERT INTO node_setup(node_id, boot_count, boot_time, store_time, comment) '
+        query = 'INSERT INTO node_setups(node_id, boot_count, boot_time, store_time, comment) '
         query += f'VALUES ({node_id}, {boot_count}, \'{boot_time}\', \'{store_time}\', \'{comment}\');'
         print(query)
         self.cursor.execute(query)
@@ -49,7 +49,7 @@ class EcoDatabase:
         self.connection.commit()
 
     def insert_gps_point(self, node_id, boot_count, read_time, store_time, latitude, longitude, altitude, siv):
-        query = 'INSERT INTO node_setup(node_id, boot_count, read_time, store_time, latitude, longitude, altitude, siv) '
+        query = 'INSERT INTO gps_points(node_id, boot_count, read_time, store_time, latitude, longitude, altitude, siv) '
         query += f'VALUES ({node_id}, {boot_count}, \'{read_time}\', \'{store_time}\', {latitude}, {longitude}, {altitude}, {siv},);'
         print(query)
         self.cursor.execute(query)
