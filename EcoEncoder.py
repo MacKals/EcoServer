@@ -12,7 +12,8 @@ dictionary = {
     '.': 11,
     '&': 12,
     ':': 13,
-    ',': 14
+    ',': 14,
+    'x': 0
 }
 
 inverseDictionary = {v: k for k, v in dictionary.items()}
