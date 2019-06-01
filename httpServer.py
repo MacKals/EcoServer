@@ -108,6 +108,7 @@ class PostHandler(http.server.BaseHTTPRequestHandler):
             e = entry.split(':')
 
             sensor_address = e[0]
+            print(e[1])
             readings = e[1].split(',')
 
             for parameter_number, data_point in enumerate(readings):
