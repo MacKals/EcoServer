@@ -86,12 +86,13 @@ class PostHandler(http.server.BaseHTTPRequestHandler):
         # extract node information
         node_id = ''.join([s for s in nodeString if s.isdigit()])
 
-        if payload[0] == 'C':
-            # config message
-            self.parseTitleString(node_id, payload)
-        else:
-            # data message
+        payloadType = payload[0]
+        if payloadType  == '&': # data message
             self.parseDataString(node_id, payload)
+        elif payloadType == ':': # config message
+            self.parseConfigString(node_id, payload)
+        elif payloadType == ',': # gps message
+            self.parseGpsString(node_id, payload)
 
         return
 
@@ -112,7 +113,7 @@ class PostHandler(http.server.BaseHTTPRequestHandler):
             for parameter_number, data_point in enumerate(readings):
                 self.database.insert_data_point(node_id, boot_count, sensor_address, str(parameter_number), read_time, store_time, data_point)
 
-    def parseTitleString(self, node_id, string):
+    def parseConfigString(self, node_id, string):
         entries = string[1:].split('&')
 
         boot_count = entries[0]
@@ -129,6 +130,9 @@ class PostHandler(http.server.BaseHTTPRequestHandler):
             sensor_serial_number = e[1]
 
             self.database.insert_node_sensor(node_id, boot_count, sensor_address, sensor_serial_number)
+
+    def parseGpsString(self, node_id, string):
+        print("GPS message from", node_id, string)
 
 
 addr = ('0.0.0.0', 5200)
