@@ -3,6 +3,8 @@
 import time, threading, socket, socketserver, http.server
 import json, datetime
 import pymysql.cursors
+import EcoEncoder
+
 
 # wrapper for communicating with database
 class EcoDatabase:
@@ -77,7 +79,11 @@ class PostHandler(http.server.BaseHTTPRequestHandler):
             return # message is not from a node
 
         nodeString = data['dev_id']
-        payload = data['payload_fields']['data']
+
+        messageBytes = data['payload_raw']
+        print(messageBytes)
+        payload = EcoEncoder.decode(messageBytes)
+
         print(threading.currentThread().getName(), 'parsing', payload)
 
         # extract node information
