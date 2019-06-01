@@ -87,6 +87,8 @@ class PostHandler(http.server.BaseHTTPRequestHandler):
         node_id = ''.join([s for s in nodeString if s.isdigit()])
 
         payloadType = payload[0]
+        payload = payload[1:]
+
         if payloadType  == '&': # data message
             self.parseDataString(node_id, payload)
         elif payloadType == ':': # config message
