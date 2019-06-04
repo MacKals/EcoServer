@@ -50,7 +50,7 @@ class EcoDatabase:
 
     def insert_gps_point(self, node_id, boot_count, read_time, store_time, latitude, longitude, altitude, siv):
         query = 'INSERT INTO gps_points(node_id, boot_count, read_time, store_time, latitude, longitude, altitude, siv) '
-        query += f'VALUES ({node_id}, {boot_count}, \'{read_time}\', \'{store_time}\', {latitude}, {longitude}, {altitude}, {siv},);'
+        query += f'VALUES ({node_id}, {boot_count}, \'{read_time}\', \'{store_time}\', {latitude}, {longitude}, {altitude}, {siv});'
         print(query)
         self.cursor.execute(query)
         self.connection.commit()
