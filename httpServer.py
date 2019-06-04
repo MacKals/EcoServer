@@ -92,10 +92,11 @@ class PostHandler(http.server.BaseHTTPRequestHandler):
         boot_time = self.timeString(entries[1])
         store_time = self.nowString()
 
-        latitude = entries[2]
-        longitude = entries[3]
-        altitude = entries[4]
-        siv = entries[5]
+        dataFields = entries[2].split(',')
+        latitude = dataFields[0]
+        longitude = dataFields[1]
+        altitude = dataFields[2]
+        siv = dataFields[3]
 
         self.database.insert_gps_point(node_id, boot_count, boot_time, store_time, latitude, longitude, altitude, siv)
 
