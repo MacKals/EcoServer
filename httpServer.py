@@ -66,7 +66,7 @@ class PostHandler(http.server.BaseHTTPRequestHandler):
                 self.database.insert_data_point(node_id, boot_count, sensor_address, str(parameter_number), read_time, store_time, data_point)
 
     def parseConfigString(self, node_id, string):
-        entries = string[1:].split('&')
+        entries = string.split('&')
 
         boot_count = entries[0]
 
