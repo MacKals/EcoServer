@@ -84,7 +84,20 @@ class PostHandler(http.server.BaseHTTPRequestHandler):
             self.database.insert_node_sensor(node_id, boot_count, sensor_address, sensor_serial_number)
 
     def parseGpsString(self, node_id, string):
-        print("GPS message from", node_id, string)
+
+        entries = string.split('&')
+
+        boot_count = entries[0]
+
+        boot_time = self.timeString(entries[1])
+        store_time = self.nowString()
+
+        latitude = entries[2]
+        longitude = entries[3]
+        altitude = entries[4]
+        siv = entries[5]
+
+        self.database.insert_gps_point(node_id, boot_count, boot_time, store_time, latitude, longitude, altitude, siv)
 
 
 addr = ('0.0.0.0', 5200)
