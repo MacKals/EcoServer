@@ -8,7 +8,7 @@ class EcoDatabase:
     # Initialize variables for communicating with data-base
     def __init__(self):
         print("starting database")
-        self.connection = pymysql.connect(host='ubc-ecohydro-nodes-mysql-database.cycweraudmq1.us-east-1.rds.amazonaws.com',
+        self.connection = pymysql.connect(host='ubc-ecohydrology-database.cqc6wpjdhqiz.us-west-2.rds.amazonaws.com',
                                           port=3306,
                                           user='ecohydro',
                                           password='7fQh53G6D2BuCnT54hXH95CJx',
